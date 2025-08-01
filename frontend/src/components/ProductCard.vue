@@ -10,7 +10,7 @@
 
     <div class="relative">
       <img
-        :src="`http://localhost:3000${product.main_image}`"
+        :src="`https://ecommerce-2-84fp.onrender.com/${product.main_image}`"
         :alt="product.name"
         class="w-56 h-56 object-cover rounded-xl mb-3 transition-transform duration-300 group-hover:scale-105"
         loading="lazy"

@@ -6,7 +6,7 @@
       <div class="md:w-1/2 p-5">
         <div class="relative">
           <img
-            :src="`http://localhost:3000${product.main_image}`"
+            :src="`https://ecommerce-2-84fp.onrender.com/${product.main_image}`"
             alt="Main Image"
             class="w-full h-[400px] object-cover rounded-xl shadow-md"
           />
@@ -18,7 +18,7 @@
           <img
             v-for="image in product.images"
             :key="image"
-            :src="`http://localhost:3000${image}`"
+            :src="`https://ecommerce-2-84fp.onrender.com/${image}`"
             alt="Product Thumbnail"
             class="w-20 h-20 object-cover rounded-md border hover:scale-105 transition-transform cursor-pointer"
           />
