@@ -1,0 +1,121 @@
+### Register user
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "name": "weer",
+  "email": "usrereer@gmail.com",
+  "password": "23456",
+  "role": "user"
+}
+
+### Login user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "agabek@gmail.com",
+  "password": "23456"
+}
+
+### change password
+PUT http://localhost:3000/user/changepass/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTEyODg0NzcsImV4cCI6MTc1MTM3NDg3N30.0GdagVg5cpIZfYSW9ZTgtusNwtHRsFT9DFvllHMTNKU
+Content-Type: application/json
+
+{
+  "password": "345"
+}
+
+### change name
+PUT http://localhost:3000/user/changename/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTEyODg0NzcsImV4cCI6MTc1MTM3NDg3N30.0GdagVg5cpIZfYSW9ZTgtusNwtHRsFT9DFvllHMTNKU
+Content-Type: application/json
+
+{
+  "name": "agabek"
+}
+
+
+### add category 
+POST  http://localhost:3000/category
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUxMjkwMDczLCJleHAiOjE3NTEzNzY0NzN9.tzMllggxTYlMdu3RgDEfd3g1LrOpM_4O24_2VBhur2E
+Content-Type: application/json
+
+{
+  "name": "tea"
+}
+
+### add product 
+POST http://localhost:3000/admin/add
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUxMjkwMDczLCJleHAiOjE3NTEzNzY0NzN9.tzMllggxTYlMdu3RgDEfd3g1LrOpM_4O24_2VBhur2E
+Content-Type: application/json
+
+{
+  "name": "tea",
+  "description" : "black tea",
+  "stock": "10",
+  "price": 45.5,
+  "categoryName": "tea",
+  "main_image": "akjsdjshjss",
+  "images": [
+    "sddds",
+    "dfddffdfd"
+  ]
+}
+
+### get products 
+GET http://localhost:3000/products/?category=tea&name=tea&limit=5&page=2
+
+### update products 
+PUT http://localhost:3000/admin/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUxMjkwMDczLCJleHAiOjE3NTEzNzY0NzN9.tzMllggxTYlMdu3RgDEfd3g1LrOpM_4O24_2VBhur2E
+Content-Type: application/json
+
+{
+  "name": "tea",
+  "description" : "green tea",
+  "stock": "10",
+  "price": 45.5,
+  "categoryName": "tea",
+  "main_image": "akjsdjshjss"
+
+}
+
+### delete products 
+DELETE  http://localhost:3000/admin/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUxMjkwMDczLCJleHAiOjE3NTEzNzY0NzN9.tzMllggxTYlMdu3RgDEfd3g1LrOpM_4O24_2VBhur2E
+Content-Type: application/json
+
+### create order
+POST http://localhost:3000/order/add
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTE2MTA0MzEsImV4cCI6MTc1MTY5NjgzMX0.zyuO9wMxBeRqkl2y8-QGNeyzbILn6fM7Ot71gwSrIH0
+Content-Type: application/json
+
+{
+  "name": "Agabek",
+  "phone_number": 63672841,
+  "address": "Ashgabat",
+  "note" : "qweww",
+  "payment_type": "card",
+  "items": [
+    {
+      "product_id" : 2,
+      "count" : 4
+    },
+    {
+      "product_id" : 3,
+      "count" : 6
+    },
+    {
+      "product_id" : 7,
+      "count" : 3
+    }
+  ]
+
+}
+
+### get all orders
+GET http://localhost:3000/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUxNjI0NzYyLCJleHAiOjE3NTE3MTExNjJ9.pKueKOX8OaVpwpTNRlDY65_h3Ys84tR-TFx1KVMJ13Y
+Content-Type: application/json
