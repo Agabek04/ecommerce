@@ -2,6 +2,8 @@ const path = require("path");
 const fs = require("fs");
 const pool = require("../config/db");
 
+const uploadToCloudinary = require('../upload');
+
 const addProduct = async (req, res) => {
   try {
     const { name, description, stock, price, categoryName } = req.body;
@@ -11,16 +13,10 @@ const addProduct = async (req, res) => {
       return res.status(400).json({ message: "main_image file is required" });
     }
 
-    const uploadDir = path.join(__dirname, "..", "files");
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir);
-    }
-
-    const mainImage = files.main_image;
-    const mainImageFileName = Date.now() + "_" + mainImage.name;
-    const mainImagePath = path.join(uploadDir, mainImageFileName);
-
-    await mainImage.mv(mainImagePath);
+    const mainImageResult = await uploadToCloudinary(
+      files.main_image.data,   
+      'products/main'
+    );
 
     const category = await pool.query(
       `SELECT * FROM categories WHERE name = $1`,
@@ -42,7 +38,7 @@ const addProduct = async (req, res) => {
         stock,
         price,
         categoryId,
-        `/files/${mainImageFileName}`,
+        mainImageResult.secure_url, 
       ]
     );
 
@@ -54,13 +50,14 @@ const addProduct = async (req, res) => {
         : [files.gallery];
 
       for (const img of gallery) {
-        const imageName = Date.now() + "_" + img.name;
-        const imagePath = path.join(uploadDir, imageName);
-        await img.mv(imagePath);
+        const galleryResult = await uploadToCloudinary(
+          img.data,
+          'products/gallery'
+        );
 
         await pool.query(
           `INSERT INTO images (product_id, img_path) VALUES ($1, $2)`,
-          [newProduct.id, `/files/${imageName}`]
+          [newProduct.id, galleryResult.secure_url]
         );
       }
     }
@@ -77,6 +74,7 @@ const addProduct = async (req, res) => {
       .json({ message: "Error adding product", error: err.message });
   }
 };
+
 const getProducts = async (req, res) => {
   const { categoryName, name, id, limit, page } = req.query;
   let query = `SELECT

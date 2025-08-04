@@ -1,10 +1,11 @@
 <template>
-  <div class="p-6">
+  <div class="p-6 w-full">
     <div v-if="products.length > 0">
       <div class="flex flex-col lg:flex-row gap-6">
-        <div class="w-3/4">
+        <!-- products -->
+        <div class="">
           <div
-            class="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+            class="flex-1 grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             <ProductCard
               v-for="product in products"
@@ -13,11 +14,9 @@
             />
           </div>
         </div>
-
-        <div class="w-1/4 fixed right-0 top-24 p-4">
-          <div
-            class="w-80 bg-white border rounded-lg shadow-md p-5 z-50"
-          >
+        <!-- order summary -->
+        <div class=" md:fixed right-16 top-24 p-4">
+          <div class="w-80 bg-white border rounded-lg shadow-md p-5 z-50">
             <h2 class="text-lg font-semibold text-gray-800 border-b pb-2">
               Cart:
             </h2>

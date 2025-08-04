@@ -8,7 +8,7 @@
           <img
             :src="`https://ecommerce-2-84fp.onrender.com${product.main_image}`"
             alt="Main Image"
-            class="w-full h-[400px] object-cover rounded-xl shadow-md"
+            class="w-[400px] h-[400px] object-cover rounded-xl shadow-md"
           />
         </div>
         <div
