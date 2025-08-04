@@ -151,6 +151,10 @@ const getProducts = async (req, res) => {
   }
 };
 
+const uploadToCloudinary = require('../utils/uploadToCloudinary');
+const cloudinary = require('../config/cloudinary');
+const pool = require('../db'); // sening db connectioning
+
 const updateProduct = async (req, res) => {
   const productId = req.params.id;
   const { name, description, stock, price, categoryName } = req.body;
@@ -178,20 +182,23 @@ const updateProduct = async (req, res) => {
     let mainImagePath = oldProduct.main_image;
 
     if (files && files.main_image) {
-      const uploadDir = path.join(__dirname, "..", "files");
-      if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+      if (oldProduct.main_image) {
+        const publicId = oldProduct.main_image
+          .split('/')
+          .slice(-2) 
+          .join('/')
+          .replace(/\.[^/.]+$/, "");
+        await cloudinary.uploader.destroy(publicId);
+      }
 
-      const mainImage = files.main_image;
-      const imageName = Date.now() + "_" + mainImage.name;
-      const imagePath = path.join(uploadDir, imageName);
-      await mainImage.mv(imagePath);
-
-      const oldPath = path.join(__dirname, "..", oldProduct.main_image);
-      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-
-      mainImagePath = `/files/${imageName}`;
+      const mainImageResult = await uploadToCloudinary(
+        files.main_image.data,
+        'products/main'
+      );
+      mainImagePath = mainImageResult.secure_url;
     }
 
+    // Productni yangilash
     const result = await pool.query(
       `UPDATE products 
        SET name = $1, description = $2, stock = $3, price = $4, category_id = $5, main_image = $6
@@ -205,9 +212,10 @@ const updateProduct = async (req, res) => {
     });
   } catch (err) {
     console.error("Update product error:", err);
-    res.status(500).json({ message: "Error updating product" });
+    res.status(500).json({ message: "Error updating product", error: err.message });
   }
 };
+
 
 const deleteProduct = async (req, res) => {
   const productId = req.params.id;
