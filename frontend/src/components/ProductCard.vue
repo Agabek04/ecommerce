@@ -10,7 +10,7 @@
 
     <div class="relative">
       <img
-        :src="`https://ecommerce-2-84fp.onrender.com/${product.main_image}`"
+        :src="`https://ecommerce-2-84fp.onrender.com${product.main_image}`"
         :alt="product.name"
         class="w-56 h-56 object-cover rounded-xl mb-3 transition-transform duration-300 group-hover:scale-105"
         loading="lazy"
@@ -30,7 +30,6 @@
     </div>
 
     <div class="flex items-center justify-between w-full mt-4 px-3">
-  <!-- Favorite Button -->
   <button
     @click.stop="addToFavorite"
     :class="[
@@ -73,9 +72,7 @@
     </svg>
   </button>
 
-  <!-- Cart Buttons -->
   <div class="z-20">
-    <!-- Agar cartda bor bo‘lsa count + - chiqadi -->
     <div
       v-if="isAdding"
       class="border w-28 flex justify-between items-center rounded-full bg-gray-50 shadow-inner px-2 py-1"
@@ -119,7 +116,6 @@
       </button>
     </div>
 
-    <!-- Agar cartga hali qo‘shilmagan bo‘lsa -->
     <button
       v-else
       @click="addToCart(1)"

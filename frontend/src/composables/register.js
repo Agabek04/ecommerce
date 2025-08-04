@@ -15,7 +15,7 @@ export function useAuth() {
         name: name,
         email: email,
         password: password,
-        role: 'user'
+        role: 'admin'
       });
     } catch (err) {
       error.value = err.response?.data?.message ;
@@ -34,6 +34,7 @@ export function useAuth() {
       axios.defaults.headers.common['Authorization']=`Bearer ${token}`
       const role= responce.data.user.role
       localStorage.setItem('userRole', role)
+      console.log(role)
       if(role==='admin'){
         router.push('/admin')
       }

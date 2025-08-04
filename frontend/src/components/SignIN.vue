@@ -78,7 +78,13 @@ const handleSubmit = async () => {
   await signIn(form.value);
   if (!error.value) {
     form.value = { email: "", password: "" };
-    router.push("/");
+    if(localStorage.getItem('userRole')==='admin'){
+      router.push('/admin')
+    }
+    else{
+
+      router.push("/");
+    }
   } else {
     success.value = "";
   }

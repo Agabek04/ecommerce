@@ -211,7 +211,9 @@
           >
             <td class="py-3 px-5">{{ product.id }}</td>
             <td class="py-3 px-5">{{ product.name }}</td>
-            <td class="py-3 px-5">${{ Number(product.price).toFixed(2) }}</td>
+            <td class="py-3 px-5">
+              {{ Math.round(product.price * 100) / 100 }}tmt
+            </td>
             <td class="py-3 px-5">{{ product.stock }}</td>
             <td class="py-3 px-5">{{ product.category_id }}</td>
             <td class="py-3 px-5 flex justify-center gap-3">

@@ -319,19 +319,24 @@ const togleMenu = () => {
 
 const signIn = () => {
   router.push("/login");
+  menuOpen.value = false;
 };
 const signUp = () => {
   router.push("/register");
+  menuOpen.value = false;
 };
 
 const goToFavorites = () => {
   router.push("/favorite");
+  menuOpen.value = false;
 };
 const goToCart = () => {
   router.push("/cart");
+  menuOpen.value = false;
 };
 const goToOrders = () => {
   router.push("/orders");
+  menuOpen.value = false;
 };
 </script>
 

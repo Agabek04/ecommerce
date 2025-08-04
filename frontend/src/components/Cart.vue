@@ -16,7 +16,7 @@
 
         <div class="w-1/4 fixed right-0 top-24 p-4">
           <div
-            class="hidden lg:block w-80 bg-white border rounded-lg shadow-md p-5 z-50"
+            class="w-80 bg-white border rounded-lg shadow-md p-5 z-50"
           >
             <h2 class="text-lg font-semibold text-gray-800 border-b pb-2">
               Cart:
