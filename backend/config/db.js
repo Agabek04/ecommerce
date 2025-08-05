@@ -4,11 +4,11 @@ require("dotenv").config();
 const dbName = process.env.DB_NAME;
 
 const rootPool = new Pool({
-  user: process.env.DB_USER  || "user",
-  host:process.env.DB_HOST || "dpg-d26a8aidbo4c73eva16g-a",
-  password: process.env.DB_PASSWORD || "p4mHHsu5LdR2sr7fV97duNDdgKuISJ33",
-  port: process.env.DB_PORT,
-  database: process.env.BD_BASE || "shop_l1c0",
+  user: "user",
+  host: "dpg-d26a8aidbo4c73eva16g-a",
+  password: "p4mHHsu5LdR2sr7fV97duNDdgKuISJ33",
+  port: 5432,
+  database: "shop_l1c0",
   ssl: { rejectUnauthorized: false },
 });
 
@@ -29,9 +29,9 @@ async function createDatabaseIfNotExists() {
 }
 
 const pool = new Pool({
-  user:process.env.DB_USER  || "user",
-  host: process.env.DB_HOST || "dpg-d26a8aidbo4c73eva16g-a",
-  password:process.env.DB_PASSWORD || "p4mHHsu5LdR2sr7fV97duNDdgKuISJ33",
+  user: "user",
+  host: "dpg-d26a8aidbo4c73eva16g-a",
+  password: "p4mHHsu5LdR2sr7fV97duNDdgKuISJ33",
   port: 5432,
   database: dbName,
   ssl: { rejectUnauthorized: false },
