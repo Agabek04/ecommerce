@@ -7,7 +7,7 @@ const {addProduct,getProducts,updateProduct,deleteProduct}=require('../controlle
 
 router.post("/product/add", authenticateToken, authorizeRoles("admin"), addProduct);
 router.get("/products", getProducts);
-router.patch("/product/:id", authenticateToken, authorizeRoles("admin"), updateProduct);
+router.put("/product/:id", authenticateToken, authorizeRoles("admin"), updateProduct);
 router.delete("/product/:id", authenticateToken, authorizeRoles("admin"), deleteProduct);
 
 module.exports = router;
