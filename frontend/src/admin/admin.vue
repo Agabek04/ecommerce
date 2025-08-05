@@ -582,7 +582,6 @@ onMounted(() => {
   fetchOrders();
 
   const userRole = localStorage.getItem("userRole");
-  console.log(userRole);
   if (userRole !== "admin") {
     console.log(userRole);
     router.push("/login");

@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const pool = require("../config/db");
-
+const cloudinary = require("../cloud");
 const uploadToCloudinary = require("../upload");
 
 const addProduct = async (req, res) => {
@@ -145,32 +145,39 @@ const getProducts = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  const productId = req.params.id;
+  const { id: productId } = req.params;
   const { name, description, stock, price, categoryName } = req.body;
   const files = req.files;
-
+  console.log("BODY:", req.body);
+console.log("FILES:", req.files);
   try {
+    // 1. Productni tekshirish
     const productRes = await pool.query(
-      `SELECT * FROM products WHERE id = $1`,
+      "SELECT * FROM products WHERE id = $1",
       [productId]
     );
-    if (productRes.rows.length === 0) {
+
+    if (!productRes.rows.length) {
       return res.status(404).json({ message: "Product not found" });
     }
     const oldProduct = productRes.rows[0];
 
+    // 2. Kategoriyani tekshirish
     const categoryRes = await pool.query(
-      `SELECT * FROM categories WHERE name=$1`,
+      "SELECT * FROM categories WHERE name = $1",
       [categoryName]
     );
-    if (categoryRes.rows.length === 0) {
-      return res.status(403).json({ message: "Category not found" });
+
+    if (!categoryRes.rows.length) {
+      return res.status(404).json({ message: "Category not found" });
     }
     const categoryId = categoryRes.rows[0].id;
 
+    // 3. Main image yangilash
     let mainImagePath = oldProduct.main_image;
 
-    if (files && files.main_image) {
+    if (files?.main_image) {
+      // Eski rasmni o‘chirish
       if (oldProduct.main_image) {
         const publicId = oldProduct.main_image
           .split("/")
@@ -180,6 +187,7 @@ const updateProduct = async (req, res) => {
         await cloudinary.uploader.destroy(publicId);
       }
 
+      // Yangi rasm yuklash
       const mainImageResult = await uploadToCloudinary(
         files.main_image.data,
         "products/main"
@@ -187,24 +195,28 @@ const updateProduct = async (req, res) => {
       mainImagePath = mainImageResult.secure_url;
     }
 
-    const result = await pool.query(
+    // 4. Productni yangilash
+    const updatedRes = await pool.query(
       `UPDATE products 
        SET name = $1, description = $2, stock = $3, price = $4, category_id = $5, main_image = $6
-       WHERE id = $7 RETURNING *`,
+       WHERE id = $7 
+       RETURNING *`,
       [name, description, stock, price, categoryId, mainImagePath, productId]
     );
 
-    res.json({
+    return res.json({
       status: "success",
-      updatedProduct: result.rows[0],
+      updatedProduct: updatedRes.rows[0],
     });
   } catch (err) {
-    console.error("Update product error:", err);
-    res
-      .status(500)
-      .json({ message: "Error updating product", error: err.message });
+    console.error("Update product error:", err.message);
+    return res.status(500).json({
+      message: "Error updating product",
+      error: err.message,
+    });
   }
 };
+
 
 const deleteProduct = async (req, res) => {
   const productId = req.params.id;
