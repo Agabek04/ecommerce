@@ -3,7 +3,7 @@
     <div
       class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden flex flex-col md:flex-row"
     >
-      <div class="md:w-1/2 p-5">
+      <div class="md:w-1/2 p-4">
         <div class="relative">
           <img
             :src="`${product.main_image}`"
@@ -25,7 +25,7 @@
         </div>
       </div>
 
-      <div class="md:w-1/2 p-6 flex flex-col justify-between">
+      <div class="md:w-1/2 m-4 flex flex-col justify-between">
         <div>
           <h1 class="text-3xl font-bold text-gray-800 mb-4">
             {{ product.name }}
