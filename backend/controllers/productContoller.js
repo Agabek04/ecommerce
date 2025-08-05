@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const pool = require("../config/db");
 
-const uploadToCloudinary = require('../upload');
+const uploadToCloudinary = require("../upload");
 
 const addProduct = async (req, res) => {
   try {
@@ -14,8 +14,8 @@ const addProduct = async (req, res) => {
     }
 
     const mainImageResult = await uploadToCloudinary(
-      files.main_image.data,   
-      'products/main'
+      files.main_image.data,
+      "products/main"
     );
 
     const category = await pool.query(
@@ -32,14 +32,7 @@ const addProduct = async (req, res) => {
     const result = await pool.query(
       `INSERT INTO products (name, description, stock, price, category_id, main_image)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [
-        name,
-        description,
-        stock,
-        price,
-        categoryId,
-        mainImageResult.secure_url, 
-      ]
+      [name, description, stock, price, categoryId, mainImageResult.secure_url]
     );
 
     const newProduct = result.rows[0];
@@ -52,7 +45,7 @@ const addProduct = async (req, res) => {
       for (const img of gallery) {
         const galleryResult = await uploadToCloudinary(
           img.data,
-          'products/gallery'
+          "products/gallery"
         );
 
         await pool.query(
@@ -151,10 +144,6 @@ const getProducts = async (req, res) => {
   }
 };
 
-const uploadToCloudinary = require('../utils/uploadToCloudinary');
-const cloudinary = require('../config/cloudinary');
-const pool = require('../db'); // sening db connectioning
-
 const updateProduct = async (req, res) => {
   const productId = req.params.id;
   const { name, description, stock, price, categoryName } = req.body;
@@ -184,21 +173,20 @@ const updateProduct = async (req, res) => {
     if (files && files.main_image) {
       if (oldProduct.main_image) {
         const publicId = oldProduct.main_image
-          .split('/')
-          .slice(-2) 
-          .join('/')
+          .split("/")
+          .slice(-2)
+          .join("/")
           .replace(/\.[^/.]+$/, "");
         await cloudinary.uploader.destroy(publicId);
       }
 
       const mainImageResult = await uploadToCloudinary(
         files.main_image.data,
-        'products/main'
+        "products/main"
       );
       mainImagePath = mainImageResult.secure_url;
     }
 
-    // Productni yangilash
     const result = await pool.query(
       `UPDATE products 
        SET name = $1, description = $2, stock = $3, price = $4, category_id = $5, main_image = $6
@@ -212,10 +200,11 @@ const updateProduct = async (req, res) => {
     });
   } catch (err) {
     console.error("Update product error:", err);
-    res.status(500).json({ message: "Error updating product", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error updating product", error: err.message });
   }
 };
-
 
 const deleteProduct = async (req, res) => {
   const productId = req.params.id;

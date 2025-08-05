@@ -15,7 +15,7 @@
           </div>
         </div>
         <!-- order summary -->
-        <div class=" md:fixed right-16 top-24 p-4">
+        <div class=" md:fixed right-6 top-24 p-4">
           <div class="w-80 bg-white border rounded-lg shadow-md p-5 z-50">
             <h2 class="text-lg font-semibold text-gray-800 border-b pb-2">
               Cart:
