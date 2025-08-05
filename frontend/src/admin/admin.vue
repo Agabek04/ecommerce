@@ -534,9 +534,10 @@ const updateProduct = async () => {
   if (mainImage.value) formData.append("main_image", mainImage.value);
   galleryImages.value.forEach((file) => formData.append("gallery", file));
 
-  await api.put(`/product/${editingProductId.value}`, formData, {
+  await api.patch(`/product/${editingProductId.value}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
     },
   });
 

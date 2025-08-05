@@ -9,40 +9,50 @@ const addProduct = async (req, res) => {
     const { name, description, stock, price, categoryName } = req.body;
     const files = req.files;
 
+    // 1. Validatsiya
+    if (!name || !description || !stock || !price || !categoryName) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     if (!files || !files.main_image) {
       return res.status(400).json({ message: "main_image file is required" });
     }
 
+    // 2. Category tekshirish
+    const categoryRes = await pool.query(
+      "SELECT id FROM categories WHERE name = $1",
+      [categoryName]
+    );
+
+    if (!categoryRes.rows.length) {
+      return res.status(403).json({ message: "Category not found" });
+    }
+
+    const categoryId = categoryRes.rows[0].id;
+
+    // 3. Main image yuklash
     const mainImageResult = await uploadToCloudinary(
       files.main_image.data,
       "products/main"
     );
 
-    const category = await pool.query(
-      `SELECT * FROM categories WHERE name = $1`,
-      [categoryName]
-    );
-
-    if (category.rows.length === 0) {
-      return res.status(403).json({ message: "Category not found" });
-    }
-
-    const categoryId = category.rows[0].id;
-
-    const result = await pool.query(
+    // 4. Product yaratish
+    const productRes = await pool.query(
       `INSERT INTO products (name, description, stock, price, category_id, main_image)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING *`,
       [name, description, stock, price, categoryId, mainImageResult.secure_url]
     );
 
-    const newProduct = result.rows[0];
+    const newProduct = productRes.rows[0];
 
+    // 5. Gallery rasmlarini qo‘shish (ixtiyoriy)
     if (files.gallery) {
-      const gallery = Array.isArray(files.gallery)
+      const galleryFiles = Array.isArray(files.gallery)
         ? files.gallery
         : [files.gallery];
 
-      for (const img of gallery) {
+      for (const img of galleryFiles) {
         const galleryResult = await uploadToCloudinary(
           img.data,
           "products/gallery"
@@ -55,18 +65,21 @@ const addProduct = async (req, res) => {
       }
     }
 
-    res.status(201).json({
+    // 6. Javob
+    return res.status(201).json({
       status: "success",
       product: newProduct,
-      message: "Product and images added",
+      message: "Product and images added successfully",
     });
   } catch (err) {
     console.error("Create product error:", err);
-    res
-      .status(500)
-      .json({ message: "Error adding product", error: err.message });
+    return res.status(500).json({
+      message: "Error adding product",
+      error: err.message,
+    });
   }
 };
+
 
 const getProducts = async (req, res) => {
   const { categoryName, name, id, limit, page } = req.query;
@@ -148,8 +161,11 @@ const updateProduct = async (req, res) => {
   const { id: productId } = req.params;
   const { name, description, stock, price, categoryName } = req.body;
   const files = req.files;
+
+  // Debug uchun loglar
   console.log("BODY:", req.body);
-console.log("FILES:", req.files);
+  console.log("FILES:", req.files);
+
   try {
     // 1. Productni tekshirish
     const productRes = await pool.query(
@@ -177,14 +193,18 @@ console.log("FILES:", req.files);
     let mainImagePath = oldProduct.main_image;
 
     if (files?.main_image) {
-      // Eski rasmni o‘chirish
+      // Eski rasmni o‘chirish (Cloudinary)
       if (oldProduct.main_image) {
-        const publicId = oldProduct.main_image
-          .split("/")
-          .slice(-2)
-          .join("/")
-          .replace(/\.[^/.]+$/, "");
-        await cloudinary.uploader.destroy(publicId);
+        try {
+          const publicId = oldProduct.main_image
+            .split("/")
+            .slice(-2)
+            .join("/")
+            .replace(/\.[^/.]+$/, "");
+          await cloudinary.uploader.destroy(publicId);
+        } catch (err) {
+          console.warn("Eski rasmni o‘chirishda xato:", err.message);
+        }
       }
 
       // Yangi rasm yuklash
@@ -204,18 +224,39 @@ console.log("FILES:", req.files);
       [name, description, stock, price, categoryId, mainImagePath, productId]
     );
 
+    // 5. Gallery qo‘shish (ixtiyoriy, agar kelgan bo‘lsa)
+    if (files?.gallery) {
+      const galleryFiles = Array.isArray(files.gallery)
+        ? files.gallery
+        : [files.gallery];
+
+      for (const img of galleryFiles) {
+        const galleryResult = await uploadToCloudinary(
+          img.data,
+          "products/gallery"
+        );
+
+        await pool.query(
+          `INSERT INTO images (product_id, img_path) VALUES ($1, $2)`,
+          [productId, galleryResult.secure_url]
+        );
+      }
+    }
+
     return res.json({
       status: "success",
       updatedProduct: updatedRes.rows[0],
+      message: "Product updated successfully",
     });
   } catch (err) {
-    console.error("Update product error:", err.message);
+    console.error("Update product error:", err);
     return res.status(500).json({
       message: "Error updating product",
       error: err.message,
     });
   }
 };
+
 
 
 const deleteProduct = async (req, res) => {
