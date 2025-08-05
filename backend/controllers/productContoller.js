@@ -162,12 +162,9 @@ const updateProduct = async (req, res) => {
   const { name, description, stock, price, categoryName } = req.body;
   const files = req.files;
 
-  // Debug uchun loglar
-  console.log("BODY:", req.body);
-  console.log("FILES:", req.files);
+ 
 
   try {
-    // 1. Productni tekshirish
     const productRes = await pool.query(
       "SELECT * FROM products WHERE id = $1",
       [productId]
@@ -178,7 +175,6 @@ const updateProduct = async (req, res) => {
     }
     const oldProduct = productRes.rows[0];
 
-    // 2. Kategoriyani tekshirish
     const categoryRes = await pool.query(
       "SELECT * FROM categories WHERE name = $1",
       [categoryName]
@@ -189,11 +185,9 @@ const updateProduct = async (req, res) => {
     }
     const categoryId = categoryRes.rows[0].id;
 
-    // 3. Main image yangilash
     let mainImagePath = oldProduct.main_image;
 
     if (files?.main_image) {
-      // Eski rasmni o‘chirish (Cloudinary)
       if (oldProduct.main_image) {
         try {
           const publicId = oldProduct.main_image
@@ -207,7 +201,6 @@ const updateProduct = async (req, res) => {
         }
       }
 
-      // Yangi rasm yuklash
       const mainImageResult = await uploadToCloudinary(
         files.main_image.data,
         "products/main"
@@ -215,7 +208,6 @@ const updateProduct = async (req, res) => {
       mainImagePath = mainImageResult.secure_url;
     }
 
-    // 4. Productni yangilash
     const updatedRes = await pool.query(
       `UPDATE products 
        SET name = $1, description = $2, stock = $3, price = $4, category_id = $5, main_image = $6
@@ -224,7 +216,6 @@ const updateProduct = async (req, res) => {
       [name, description, stock, price, categoryId, mainImagePath, productId]
     );
 
-    // 5. Gallery qo‘shish (ixtiyoriy, agar kelgan bo‘lsa)
     if (files?.gallery) {
       const galleryFiles = Array.isArray(files.gallery)
         ? files.gallery
