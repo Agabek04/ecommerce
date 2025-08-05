@@ -9,7 +9,6 @@ const addProduct = async (req, res) => {
     const { name, description, stock, price, categoryName } = req.body;
     const files = req.files;
 
-    // 1. Validatsiya
     if (!name || !description || !stock || !price || !categoryName) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -18,7 +17,6 @@ const addProduct = async (req, res) => {
       return res.status(400).json({ message: "main_image file is required" });
     }
 
-    // 2. Category tekshirish
     const categoryRes = await pool.query(
       "SELECT id FROM categories WHERE name = $1",
       [categoryName]
@@ -30,13 +28,11 @@ const addProduct = async (req, res) => {
 
     const categoryId = categoryRes.rows[0].id;
 
-    // 3. Main image yuklash
     const mainImageResult = await uploadToCloudinary(
       files.main_image.data,
       "products/main"
     );
 
-    // 4. Product yaratish
     const productRes = await pool.query(
       `INSERT INTO products (name, description, stock, price, category_id, main_image)
        VALUES ($1, $2, $3, $4, $5, $6)
@@ -46,7 +42,6 @@ const addProduct = async (req, res) => {
 
     const newProduct = productRes.rows[0];
 
-    // 5. Gallery rasmlarini qo‘shish (ixtiyoriy)
     if (files.gallery) {
       const galleryFiles = Array.isArray(files.gallery)
         ? files.gallery
@@ -65,7 +60,6 @@ const addProduct = async (req, res) => {
       }
     }
 
-    // 6. Javob
     return res.status(201).json({
       status: "success",
       product: newProduct,

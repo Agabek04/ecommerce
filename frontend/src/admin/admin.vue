@@ -287,7 +287,7 @@
 
       <div
         v-if="showModal"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        class="fixed inset-0 bg-white flex items-center justify-center z-50"
       >
         <div
           class="bg-white w-full max-w-2xl rounded-2xl shadow-lg p-6 relative"
@@ -362,11 +362,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import api from "../composables/api";
-import { useAuthStore } from "../stores/authStore";
 
 const token = localStorage.getItem("token");
 const tab = ref("categories");
-const auth = useAuthStore();
 
 const tabClass =
   "px-6 py-3 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-100 transition";
