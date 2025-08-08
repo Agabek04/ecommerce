@@ -43,7 +43,9 @@ const createOrder = async (req, res) => {
         };
       })
     );
-
+    if(totalPrice<100){
+      totalPrice+=10
+    }
     const orderResult = await pool.query(
       `INSERT INTO "order" (user_id, status, name, phone_number, address, note, total_quantity, total_price, payment_type)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
