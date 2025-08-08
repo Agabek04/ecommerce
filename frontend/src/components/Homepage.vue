@@ -1,15 +1,17 @@
 <template>
-  <div class="p-10">
-    <div v-if="loading" class="text-center py-10 text-gray-500 animate-pulse text-2xl">
-      Loading...
-    </div>
-
-    <div v-else>
-      <Category
-        v-for="category in visibleCategories"
-        :key="category.id"
-        :category="category"
-      />
+  <div>
+    <div class="px-10 py-4">
+      <div v-if="loading" class="text-center py-10 text-gray-500 animate-pulse text-2xl">
+        Loading...
+      </div>
+  
+      <div v-else>
+        <Category
+          v-for="category in visibleCategories"
+          :key="category.id"
+          :category="category"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -17,6 +19,7 @@
 <script setup>
 import { ref } from "vue";
 import Category from "./Category.vue";
+import Foter from "./Foter.vue";
 import { useCategory } from "../composables/useCategory";
 
 const { getCategories, loading } = useCategory();

@@ -6,7 +6,7 @@
     >
       {{ category.name }}
     </button>
-    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div class="mb-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <ProductCard
         v-for="product in productS.slice(0, 4)"
         :key="product.id"
