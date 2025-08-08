@@ -4,11 +4,20 @@
       class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden flex flex-col md:flex-row"
     >
       <div class="md:w-1/2 p-4">
-        <div class="relative">
+        <div
+          class="relative w-[400px] h-[400px] rounded-xl shadow-md overflow-hidden"
+        >
+          <div
+            v-if="loading"
+            class="absolute inset-0 bg-gray-200 rounded-xl animate-pulse z-10"
+          ></div>
+
           <img
-            :src="`${product.main_image}`"
+            v-else
+            :src="product.main_image"
             alt="Main Image"
-            class="w-[400px] h-[400px] object-cover rounded-xl shadow-md"
+            class="w-full h-full object-cover rounded-xl"
+            @load="handleImageLoad"
           />
         </div>
         <div
@@ -26,14 +35,28 @@
       </div>
 
       <div class="md:w-1/2 m-4 flex flex-col justify-between">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-800 mb-4">
-            {{ product.name }}
-          </h1>
-          <p class="text-gray-600 mb-6">{{ product.description }}</p>
-          <p class="text-2xl font-semibold text-green-600 mb-6">
-            {{ product.price }} tmt
-          </p>
+        <div class="mt-4 flex flex-col justify-between">
+          <div v-if="loading" class="animate-pulse">
+            <div class="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
+
+            <div class="h-4 bg-gray-200 rounded w-full mb-2"></div>
+            <div class="h-4 bg-gray-200 rounded w-5/6 mb-2"></div>
+            <div class="h-4 bg-gray-200 rounded w-2/3 mb-6"></div>
+
+            <div class="h-6 bg-gray-200 rounded w-1/3 mb-6"></div>
+          </div>
+
+          <div v-else class="m-4 flex flex-col justify-between">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-800 mb-4">
+                {{ product.name }}
+              </h1>
+              <p class="text-gray-600 mb-6">{{ product.description }}</p>
+              <p class="text-2xl font-semibold text-green-600 mb-6">
+                {{ product.price }} tmt
+              </p>
+            </div>
+          </div>
         </div>
 
         <div>
@@ -138,7 +161,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useProduct } from "../composables/useProducts";
 import { useFavoriteStore } from "../stores/favoriteStore";
@@ -147,9 +170,10 @@ import { useCartStore } from "../stores/cartStore";
 const favorite = useFavoriteStore();
 const cart = useCartStore();
 
-const { getProduct } = useProduct();
+const { getProduct, products, loading } = useProduct();
 const route = useRoute();
 const product = ref({});
+const load = ref(false);
 const prod = ref({
   categoryName: "",
   name: "",
@@ -157,9 +181,12 @@ const prod = ref({
 });
 
 async function getProdByCat() {
-  const res = await getProduct(prod.value);
-  product.value = res.products[0];
+  await getProduct({ ...prod.value });
+  product.value = products.value[0];
 }
+watch(loading, (newVal) => {
+  load.value = newVal;
+});
 onMounted(() => getProdByCat());
 
 const isFavorite = computed(() => favorite.isFavorite(product.value));
@@ -186,3 +213,18 @@ function decreaseFromCart() {
   cart.decreaseFromCart(product.value);
 }
 </script>
+<style>
+.animate-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+</style>

@@ -1,12 +1,28 @@
 <template>
   <div class="p-6 md:px-14 w-full min-h-screen bg-gray-50">
-    <p class="text-3xl font-extrabold mb-8 text-gray-800 text-center capitalize">
-      {{ query.categoryName || 'Barcha mahsulotlar' }}
+    <p
+      class="text-3xl font-extrabold mb-8 text-gray-800 text-center capitalize"
+    >
+      {{ query.categoryName || "Barcha mahsulotlar" }}
     </p>
 
-    <div v-if="products.length" class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div
+      v-if="loading"
+      class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+    >
+      <div
+        v-for="n in 8"
+        :key="n"
+        class="h-64 bg-gray-200 rounded-xl animate-pulse"
+      ></div>
+    </div>
+
+    <div
+      v-else-if="productS.length"
+      class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+    >
       <ProductCard
-        v-for="product in products"
+        v-for="product in productS"
         :key="product.id"
         :product="product"
       />
@@ -26,7 +42,7 @@ import ProductCard from "./ProductCard.vue";
 import { useCategoryStore } from "../stores/useCategoryStore";
 
 const route = useRoute();
-const { getProduct } = useProduct();
+const { getProduct, products, loading } = useProduct();
 const categoryStore = useCategoryStore();
 
 const query = ref({
@@ -36,7 +52,7 @@ const query = ref({
   page: 1,
 });
 
-const products = ref([]);
+const productS = ref([]);
 
 watch(
   () => route.query.category,
@@ -46,13 +62,28 @@ watch(
     query.value.categoryName = category;
 
     try {
-      const res = await getProduct(query.value);
-      products.value = res?.products || [];
+      await getProduct(query.value);
+      productS.value = products.value;
     } catch (err) {
       console.error(err);
-      products.value = [];
+      productS.value = [];
     }
   },
   { immediate: true }
 );
 </script>
+
+<style>
+.animate-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+</style>

@@ -56,7 +56,6 @@ export function useOrder() {
   };
   const updateOrder = async (order_id, status) => {
     error.value = null;
-    console.log(order_id);
     try {
       await api.put("/order", {
         order_id,

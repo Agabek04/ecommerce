@@ -21,8 +21,21 @@
         />
       </svg>
     </button>
-
-    <div class="hidden md:block">
+    <!-- homepage image -->
+    <div
+      @click="goHome"
+      class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+      title="Homepage"
+    >
+    <a href="/">
+      <img
+        width="24"
+        height="24"
+        src="https://img.icons8.com/material-outlined/24/home-page.png"
+        alt="home-page"
+      /></a>
+    </div>
+    <div class="hidden md:block ml-10">
       <CategoryList />
     </div>
 

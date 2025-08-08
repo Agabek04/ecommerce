@@ -6,11 +6,12 @@
     >
       {{ category.name }}
     </button>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <ProductCard
-        v-for="product in products.slice(0, 4)"
+        v-for="product in productS.slice(0, 4)"
         :key="product.id"
         :product="product"
+        :load="load"
       />
     </div>
   </div>
@@ -18,10 +19,10 @@
 <script setup>
 import { useProduct } from "../composables/useProducts";
 import ProductCard from "./ProductCard.vue";
-import { ref, defineProps } from "vue";
+import { ref, defineProps, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
-const { getProduct } = useProduct();
+const { getProduct, products, loading } = useProduct();
 const props = defineProps({
   category: {
     type: Object,
@@ -32,13 +33,19 @@ const prod = ref({
   categoryName: props.category.name,
   name: "",
 });
-const products = ref([]);
+const productS = ref([]);
+const load=ref(false)
 async function getProdByCat() {
-  const res = await getProduct(prod.value);
-  products.value = res.products;
+  await getProduct( {...prod.value});
+  productS.value = products.value;
+  
 }
-getProdByCat();
-
+watch(loading, (newVal) => {
+  load.value = newVal;
+});
+onMounted(() => {
+  getProdByCat();
+});
 const gotoCategory = (cat) => {
   router.push({ name: "products", query: { category: cat.name } });
 };

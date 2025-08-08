@@ -26,16 +26,20 @@ export function useProduct() {
   const getProduct = async ({ categoryName, name, id, limit, page } = {}) => {
     error.value = null;
     loading.value = true;
+    const start = Date.now();
     try {
       const result = await api.get("/products", {
         params: { categoryName, name, id, limit, page },
       });
-      products.value = result.data;
-      return products.value;
+      products.value = result.data.products;
     } catch (err) {
       error.value = err.response?.data?.message || "Error fetching products";
     } finally {
-      loading.value = false;
+      const elapsed = Date.now() - start;
+      const delay = Math.max(0, 2000 - elapsed);
+      setTimeout(() => {
+        loading.value = false;
+      }, delay);
     }
   };
 
