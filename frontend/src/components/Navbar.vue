@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex w-full h-20 border items-center justify-between px-2 sm:px-4 md:px-6 lg:px-8 bg-white shadow"
+    class="flex w-full h-20 border border-gray-300 items-center justify-between px-2 sm:px-4 md:px-6 lg:px-8 bg-white shadow"
   >
     <button
       @click="menuOpen = !menuOpen"
