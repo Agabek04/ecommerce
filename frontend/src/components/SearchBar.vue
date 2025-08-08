@@ -36,7 +36,7 @@ import { useProduct } from "../composables/useProducts";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const { getProduct } = useProduct();
+const { getProduct,products } = useProduct();
 const searchStore = useSearchStore();
 
 const searchQuery = ref({
@@ -49,8 +49,8 @@ const searchQuery = ref({
 async function searchProduct() {
   if (!searchQuery.value.name) return;
 
-  const result = await getProduct(searchQuery.value);
-  searchStore.setProducts(result.products);
+  await getProduct(searchQuery.value);
+  searchStore.setProducts(products.value);
 
   router.push({
     path: "/search",
