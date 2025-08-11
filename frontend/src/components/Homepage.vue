@@ -13,6 +13,7 @@
         />
       </div>
     </div>
+    <Foter/>
   </div>
 </template>
 

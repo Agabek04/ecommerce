@@ -1,14 +1,14 @@
 <template>
-  <div class="p-6 md:px-14 w-full min-h-screen bg-gray-50">
+  <div class="px-10 py-4">
     <p
       class="text-3xl font-extrabold mb-8 text-gray-800 text-center capitalize"
     >
-      {{ query.categoryName || "Barcha mahsulotlar" }}
+      {{ query.categoryName }}
     </p>
 
     <div
       v-if="loading"
-      class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+      class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
     >
       <div
         v-for="n in 8"
@@ -19,7 +19,7 @@
 
     <div
       v-else-if="productS.length"
-      class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+      class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
     >
       <ProductCard
         v-for="product in productS"
@@ -31,6 +31,7 @@
     <p v-else class="text-gray-500 text-center mt-20 text-lg">
       Products not found
     </p>
+    <Foter/>
   </div>
 </template>
 
@@ -39,6 +40,7 @@ import { ref, watch } from "vue";
 import { useProduct } from "../composables/useProducts";
 import { useRoute } from "vue-router";
 import ProductCard from "./ProductCard.vue";
+import Foter from "./Foter.vue";
 import { useCategoryStore } from "../stores/useCategoryStore";
 
 const route = useRoute();

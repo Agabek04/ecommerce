@@ -36,7 +36,7 @@
       /></a>
     </div>
     <div class="hidden md:block ml-10">
-      <CategoryList />
+      <CategoryList @category-selected="handleCategorySelect"/>
     </div>
 
     <div class="flex-1 mx-4">
@@ -211,7 +211,7 @@
     <transition name="slide">
       <div
         v-if="menuOpen"
-        class="fixed top-0 left-0 w-64 h-full bg-white shadow-xl z-50 flex flex-col"
+        class="fixed top-0 left-0 w-64 h-full bg-white shadow-xl z-50 flex flex-col md:hidden"
       >
         <div class="flex items-center justify-between px-4 py-3 border-b">
           <h2 class="text-base font-semibold text-gray-700">Menu</h2>
@@ -225,7 +225,7 @@
 
         <div class="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-6">
           <div class="border-b pb-4">
-            <CategoryList />
+            <CategoryList @category-selected="handleCategorySelect"/>
           </div>
 
           <div class="flex flex-col gap-3">
@@ -294,8 +294,10 @@
             </div>
           </div>
         </div>
+        <button class="fixed top-0 left-64 w-full h-full" @click="menuOpen=false"></button>
       </div>
     </transition>
+    
   </div>
 </template>
 
@@ -314,7 +316,6 @@ const countAll = computed(() => cart.countAll);
 const favorite = useFavoriteStore();
 const favorites = computed(() => favorite.favorites);
 const auth = useAuthStore();
-const emit = defineEmits(["products"]);
 
 const router = useRouter();
 const showMenu = ref(false);
@@ -351,6 +352,10 @@ const goToOrders = () => {
   router.push("/orders");
   menuOpen.value = false;
 };
+function handleCategorySelect(category) {
+  console.log("Tanlangan kategoriya:", category);
+  menuOpen.value = false;
+}
 </script>
 
 <style>

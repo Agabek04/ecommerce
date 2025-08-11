@@ -55,7 +55,7 @@
 import { ref } from "vue";
 import { useCategory } from "../composables/useCategory";
 import { useRouter } from "vue-router";
-
+const emit = defineEmits(["category-selected"]);
 const router = useRouter();
 const { getCategories, categories } = useCategory();
 getCategories();
@@ -66,6 +66,7 @@ function toggleCategory() {
 }
 const gotoCategory = (cat) => {
   show.value = false;
+   emit("category-selected", cat);
   router.push({ name: "products", query: { category: cat.name } });
 };
 </script>

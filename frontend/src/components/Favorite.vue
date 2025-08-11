@@ -15,12 +15,14 @@
         class="bg-white rounded-xl shadow-lg border border-transparent hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer"
       />
     </div>
+    <Foter/>
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
 import ProductCard from "./ProductCard.vue";
+import Foter from "./Foter.vue";
 import { useFavoriteStore } from "../stores/favoriteStore";
 
 const favoriteStore = useFavoriteStore();

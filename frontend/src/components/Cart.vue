@@ -76,6 +76,7 @@
         Your shopping cart is empty
       </p>
     </div>
+    <Foter/>
   </div>
 </template>
 
@@ -83,6 +84,7 @@
 <script setup>
 import { computed } from "vue";
 import ProductCard from "./ProductCard.vue";
+import Foter from "./Foter.vue";
 import { useCartStore } from "../stores/cartStore";
 import router from "../router";
 
