@@ -158,6 +158,7 @@
           </div>
         </div>
       </div>
+      <SimilarProducts :categoryId="product.category_id" :excludeProductId="product.id"/>
     </div>
     <Foter />
   </div>
@@ -170,6 +171,7 @@ import { useProduct } from "../composables/useProducts";
 import { useFavoriteStore } from "../stores/favoriteStore";
 import { useCartStore } from "../stores/cartStore";
 import Foter from "./Foter.vue";
+import SimilarProducts from "./SimilarProducts.vue";
 
 const favorite = useFavoriteStore();
 const cart = useCartStore();
@@ -181,18 +183,25 @@ const load = ref(false);
 const prod = ref({
   categoryName: "",
   name: "",
-  id: route.params.id,
+  id: 0,
 });
 
 async function getProdByCat() {
+  prod.value.id=route.params.id
   await getProduct({ ...prod.value });
   product.value = products.value[0];
+  console.log(prod.value)
 }
 watch(loading, (newVal) => {
   load.value = newVal;
 });
 onMounted(() => getProdByCat());
-
+watch(
+  () => route.params.id,
+  () => {
+    getProdByCat();
+  }
+);
 const isFavorite = computed(() => favorite.isFavorite(product.value));
 function toggleFavorite() {
   if (isFavorite.value) {

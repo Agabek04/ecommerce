@@ -161,7 +161,7 @@
 
 
 <script setup>
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useFavoriteStore } from "../stores/favoriteStore";
 import { useCartStore } from "../stores/cartStore";

@@ -33,7 +33,6 @@ export function useCategory() {
     try {
       const result = await api.get("/category");
       categories.value = result.data;
-      return categories.value
     } catch (err) {
       error.value = err.response?.data?.message;
     } finally {
