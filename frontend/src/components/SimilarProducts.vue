@@ -1,5 +1,5 @@
 <template>
-  <div v-if="similarProducts.length > 0" class="mt-10 px-4">
+  <div v-if="similarProducts" class="mt-10 px-4">
     <h2 class="text-2xl font-semibold mb-4">Similar Products</h2>
 
     <div
@@ -47,12 +47,7 @@ const load = ref(false);
 const router = useRouter();
 const similarCategory = ref();
 
-// function shuffleArray(array) {
-//   return array
-//     .map((item) => ({ item, sort: Math.random() }))
-//     .sort((a, b) => a.sort - b.sort)
-//     .map(({ item }) => item);
-// }
+
 async function fetchSimilarProducts() {
   if (!props.categoryId) {
     similarProducts.value = [];
@@ -63,10 +58,10 @@ async function fetchSimilarProducts() {
     (category) => category.id === props.categoryId
   );
   await getProduct({ categoryName: similarCategory.value.name, limit: 10 });
-  similarProducts.value = products.value.filter(
+  const similar = products.value.filter(
     (p) => p.id !== props.excludeProductId
   );
-//   similarProducts.value = shuffleArray(filtered).slice(0, 4);
+   similarProducts.value = similar.slice(0, 4);
 }
 
 watch(loading, (newVal) => {

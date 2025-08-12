@@ -23,12 +23,13 @@ import Category from "./Category.vue";
 import Foter from "./Foter.vue";
 import { useCategory } from "../composables/useCategory";
 
-const { getCategories, loading } = useCategory();
+const { getCategories, loading, categories } = useCategory();
 const allCategories = ref([]);
 const visibleCategories = ref([]);
 
 async function fetchCategories() {
-  allCategories.value = await getCategories();
+  await getCategories();
+  allCategories.value=categories.value
   visibleCategories.value = [];
 
   for (let i = 0; i < allCategories.value.length; i++) {
